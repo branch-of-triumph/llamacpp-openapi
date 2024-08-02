@@ -1,0 +1,434 @@
+openapi: 3.0.3
+info:
+  title: llama.cpp Server API
+  description: API for interacting with the llama.cpp server.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: openai
+    description: openai compatible
+
+paths:
+  /health:
+    get:
+      summary: Get the health status of the server
+      operationId: getHealth
+      description: Returns the current state of the server
+      parameters:
+        - name: include_slots
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Include internal slots data in the response
+        - name: fail_on_no_slot
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Fail if no slot is available
+      responses:
+        '200':
+          description: Service healthy. Slot may be available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '500':
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: No slot available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /completion:
+    post:
+      operationId: postCompletion
+      summary: Generate a text completion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCompletionRequest'
+      responses:
+        '200':
+          description: Completion generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCompletionResponse'
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        slots_idle:
+          type: integer
+          description: Number of idle slots
+        slots_processing:
+          type: integer
+          description: Number of processing slots
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+      required:
+        - status
+    Slot:
+      type: object
+      properties:
+        n_ctx:
+          type: integer
+        n_predict:
+          type: integer
+        model:
+          type: string
+        seed:
+          type: integer
+        temperature:
+          type: number
+        dynatemp_range:
+          type: number
+        dynatemp_exponent:
+          type: number
+        top_k:
+          type: integer
+        top_p:
+          type: number
+        min_p:
+          type: number
+        tfs_z:
+          type: number
+        typical_p:
+          type: number
+        repeat_last_n:
+          type: integer
+        repeat_penalty:
+          type: number
+        presence_penalty:
+          type: number
+        frequency_penalty:
+          type: number
+        penalty_prompt_tokens:
+          type: array
+          items:
+            type: string
+        use_penalty_prompt_tokens:
+          type: boolean
+        mirostat:
+          type: integer
+        mirostat_tau:
+          type: number
+        mirostat_eta:
+          type: number
+        penalize_nl:
+          type: boolean
+        stop:
+          type: array
+          items:
+            type: string
+        n_keep:
+          type: integer
+        n_discard:
+          type: integer
+        ignore_eos:
+          type: boolean
+        stream:
+          type: boolean
+        logit_bias:
+          type: array
+          items:
+            type: number
+        n_probs:
+          type: integer
+        min_keep:
+          type: integer
+        grammar:
+          type: string
+        samplers:
+          type: array
+          items:
+            type: string
+        id:
+          type: integer
+        id_task:
+          type: integer
+        state:
+          type: integer
+        prompt:
+          type: string
+          nullable: true
+        next_token:
+          $ref: '#/components/schemas/NextToken'
+      required:
+        - n_ctx
+    NextToken:
+      type: object
+      properties:
+        has_next_token:
+          type: boolean
+        n_remain:
+          type: integer
+        n_decoded:
+          type: integer
+        stopped_eos:
+          type: boolean
+        stopped_word:
+          type: boolean
+        stopped_limit:
+          type: boolean
+        stopping_word:
+          type: string
+    GenerationSettings:
+      type: object
+      properties:
+        n_ctx:
+          type: integer
+        n_predict:
+          type: integer
+        model:
+          type: string
+        seed:
+          type: integer
+        temperature:
+          type: number
+        dynatemp_range:
+          type: number
+        dynatemp_exponent:
+          type: number
+        top_k:
+          type: integer
+        top_p:
+          type: number
+        min_p:
+          type: number
+        tfs_z:
+          type: number
+        typical_p:
+          type: number
+        repeat_last_n:
+          type: integer
+        repeat_penalty:
+          type: number
+        presence_penalty:
+          type: number
+        frequency_penalty:
+          type: number
+        penalty_prompt_tokens:
+          type: array
+          items:
+            type: string
+        use_penalty_prompt_tokens:
+          type: boolean
+        mirostat:
+          type: integer
+        mirostat_tau:
+          type: number
+        mirostat_eta:
+          type: number
+        penalize_nl:
+          type: boolean
+        stop:
+          type: array
+          items:
+            type: string
+        n_keep:
+          type: integer
+        n_discard:
+          type: integer
+        ignore_eos:
+          type: boolean
+        stream:
+          type: boolean
+        logit_bias:
+          type: array
+          items:
+            type: number
+        n_probs:
+          type: integer
+        min_keep:
+          type: integer
+        grammar:
+          type: string
+        samplers:
+          type: array
+          items:
+            type: string
+    Image:
+      type: object
+      properties:
+        image_data:
+          type: string
+        id:
+          type: integer
+    PostCompletionResponse:
+      type: object
+      properties:
+        content:
+          type: string
+        id_slot:
+          type: integer
+        stop:
+          type: boolean
+        model:
+          type: string
+        tokens_predicted:
+          type: integer
+        tokens_evaluated:
+          type: integer
+        generation_settings:
+          $ref: '#/components/schemas/GenerationSettings'
+        prompt:
+          type: string
+        truncated:
+          type: boolean
+        stopped_eos:
+          type: boolean
+        stopped_word:
+          type: boolean
+        stopped_limit:
+          type: boolean
+        stopping_word:
+          type: string
+        tokens_cached:
+          type: integer
+        timings:
+          type: object
+          properties:
+            prompt_n:
+              type: integer
+            prompt_ms:
+              type: number
+            prompt_per_token_ms:
+              type: number
+            prompt_per_second:
+              type: number
+            predicted_n:
+              type: integer
+            predicted_ms:
+              type: number
+            predicted_per_token_ms:
+              type: number
+            predicted_per_second:
+              type: number
+    PostCompletionRequest:
+      type: object
+      properties:
+        prompt:
+          type: string
+          description: The input text to complete
+        temperature:
+          type: number
+          description: Temperature parameter
+        dynatemp_range:
+          type: number
+          description: Dynamic temperature range
+        dynatemp_exponent:
+          type: number
+          description: Dynamic temperature exponent
+        top_k:
+          type: integer
+          description: Top-k sampling parameter
+        top_p:
+          type: number
+          description: Top-p sampling parameter
+        min_p:
+          type: number
+          description: Minimum probability threshold
+        n_predict:
+          type: integer
+          description: Number of tokens to predict
+        n_keep:
+          type: integer
+          description: Number of keep tokens
+        stream:
+          type: boolean
+          description: Stream flag
+        stop:
+          type: array
+          items:
+            type: string
+          description: Stop tokens
+        tfs_z:
+          type: number
+          description: TF-Sampling parameter
+        typical_p:
+          type: number
+          description: Typical-P sampling parameter
+        repeat_penalty:
+          type: number
+          description: Repeat penalty parameter
+        repeat_last_n:
+          type: integer
+          description: Repeat last n tokens parameter
+        penalize_nl:
+          type: boolean
+          description: Penalize newline flag
+        presence_penalty:
+          type: number
+          description: Presence penalty parameter
+        frequency_penalty:
+          type: number
+          description: Frequency penalty parameter
+        penalty_prompt:
+          type: string
+          description: The penalty prompt
+        mirostat:
+          type: integer
+          description: Mirostat parameter
+        mirostat_tau:
+          type: number
+          description: Mirostat tau parameter
+        mirostat_eta:
+          type: number
+          description: Mirostat eta parameter
+        grammar:
+          type: string
+          description: Grammar parameter
+        json_schema:
+          description: Grammar parameter
+        seed:
+          type: integer
+          description: Random seed
+        ignore_eos:
+          type: boolean
+          description: Ignore EOS flag
+        logit_bias:
+          type: array
+          items:
+            type: number
+          description: Logit bias values
+        n_probs:
+          type: integer
+          description: Number of probabilities to return
+        min_keep:
+          type: integer
+          description: Minimum keep tokens parameter
+        image_data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          description: Images to reference
+        id_slot:
+          type: integer
+          description: Slot identifier
+        cache_prompt:
+          type: boolean
+          description: To cache or not to cache prompt
+        system_prompt:
+          type: string
+          description: System prompt
+        samplers:
+          type: array
+          items:
+            type: string
+          description: Samplers list
