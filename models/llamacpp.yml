@@ -458,7 +458,7 @@ components:
         add_special:
           type: boolean
           description: To insert special tokens or not
-    PostTokenizeRequest:
+    PostTokenizeResponse:
       type: object
       properties:
         tokens:
