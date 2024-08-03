@@ -34,19 +34,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
+                $ref: '#/components/schemas/GetHealthResponse'
         '500':
           description: Internal Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
+                $ref: '#/components/schemas/GetHealthResponse'
         '503':
           description: No slot available.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
+                $ref: '#/components/schemas/GetHealthResponse'
   /completion:
     post:
       operationId: postCompletion
@@ -66,26 +66,24 @@ paths:
                 $ref: '#/components/schemas/PostCompletionResponse'
   /tokenize:
     post:
-      operationId: tokenize
+      operationId: postTokenize
       summary: Tokenize a given text
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenizeRequest'
+              $ref: '#/components/schemas/PostTokenizeRequest'
       responses:
         '200':
           description: Tokenize text successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
+                $ref: '#/components/schemas/PostTokenizeResponse'
 components:
   schemas:
-    HealthResponse:
+    GetHealthResponse:
       type: object
       properties:
         status:
@@ -451,7 +449,7 @@ components:
           items:
             type: string
           description: Samplers list
-    TokenizeRequest:
+    PostTokenizeRequest:
       type: object
       properties:
         content:
@@ -460,3 +458,11 @@ components:
         add_special:
           type: boolean
           description: To insert special tokens or not
+    PostTokenizeRequest:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            type: integer
+          description: Tokens generated from given text
