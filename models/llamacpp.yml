@@ -64,6 +64,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostCompletionResponse'
+  /tokenize:
+    post:
+      operationId: postTokenize
+      summary: Tokenize a given text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTokenizeRequest'
+      responses:
+        '200':
+          description: Tokenize text successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTokenizeResponse'
 components:
   schemas:
     GetHealthResponse:
@@ -432,3 +449,20 @@ components:
           items:
             type: string
           description: Samplers list
+    PostTokenizeRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Text to tokenize
+        add_special:
+          type: boolean
+          description: To insert special tokens or not
+    PostTokenizeResponse:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            type: integer
+          description: Tokens generated from given text
