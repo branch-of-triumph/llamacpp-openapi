@@ -80,7 +80,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/PostTokenizeResponse'
+                $ref: '#/components/schemas/PostTokenizeResponse'
   /slots:
     get:
       operationId: getSlots
