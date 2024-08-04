@@ -809,7 +809,14 @@ components:
       type: object
       properties:
         system_prompt:
-          $ref: "#/components/schemas/SystemPrompt"
+          type: string
+          description: Specified system prompt
+        assistant_name:
+          type: string
+          description: Assistant name to generate the prompt
+        user_name:
+          type: string
+          description: Anti-prompt to generate the prompt
         default_generation_settings:
           $ref: '#/components/schemas/GenerationSettings'
         total_slots:
