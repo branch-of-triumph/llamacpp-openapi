@@ -162,7 +162,7 @@ paths:
               $ref: '#/components/schemas/PostEmbeddingRequest'
       responses:
         '200':
-          description: Infill generated successfully (note that response structure is identical to POST /completion)
+          description: Embedding generated successfully
           content:
             application/json:
               schema:
