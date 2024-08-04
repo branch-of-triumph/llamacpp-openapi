@@ -177,7 +177,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostCompletionResponse'
+                $ref: '#/components/schemas/PostInfillResponse'
   /embedding:
     post:
       operationId: postEmbedding
@@ -775,6 +775,8 @@ components:
           items:
             type: string
           description: Samplers list
+    PostInfillResponse:
+      $ref: '#/components/schemas/PostCompletionResponse'
     PostEmbeddingRequest:
       type: object
       properties:
