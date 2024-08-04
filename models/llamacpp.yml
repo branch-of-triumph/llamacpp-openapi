@@ -386,6 +386,15 @@ components:
           type: string
         id:
           type: integer
+    SystemPrompt:
+      type: object
+      properties:
+        prompt:
+          type: string
+        anti_prompt:
+          type: string
+        assistant_name:
+          type: string
     Error:
       type: object
       properties:
@@ -535,8 +544,7 @@ components:
           type: boolean
           description: To cache or not to cache prompt
         system_prompt:
-          type: string
-          description: System prompt
+          $ref: "#/components/schemas/SystemPrompt"
         samplers:
           type: array
           items:
@@ -733,8 +741,7 @@ components:
           type: boolean
           description: To cache or not to cache prompt
         system_prompt:
-          type: string
-          description: System prompt
+          $ref: "#/components/schemas/SystemPrompt"
         samplers:
           type: array
           items:
