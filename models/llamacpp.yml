@@ -133,6 +133,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /infill:
+    post:
+      operationId: postInfill
+      summary: For code infilling. Takes a prefix and a suffix and returns the predicted completion as stream.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInfillRequest'
+      responses:
+        '200':
+          description: Infill generated successfully (note that response structure is identical to POST /completion)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCompletionResponse'
+  /embedding:
+    post:
+      operationId: postEmbedding
+      summary: Generate embedding of a given text.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostEmbeddingRequest'
+      responses:
+        '200':
+          description: Embedding generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostEmbeddingResponse'
 
 components:
   schemas:
@@ -348,7 +382,7 @@ components:
     Image:
       type: object
       properties:
-        image_data:
+        data:
           type: string
         id:
           type: integer
@@ -594,3 +628,132 @@ components:
           description: Number of erased items
         timings:
           $ref: '#/components/schemas/SlotsTimings'
+    PostInfillRequest:
+      type: object
+      properties:
+        input_prefix:
+          type: string
+          description: Set the prefix of the code to infill.
+        input_suffix:
+          type: string
+          description: Set the suffix of the code to infill.
+        temperature:
+          type: number
+          description: Temperature parameter
+        dynatemp_range:
+          type: number
+          description: Dynamic temperature range
+        dynatemp_exponent:
+          type: number
+          description: Dynamic temperature exponent
+        top_k:
+          type: integer
+          description: Top-k sampling parameter
+        top_p:
+          type: number
+          description: Top-p sampling parameter
+        min_p:
+          type: number
+          description: Minimum probability threshold
+        n_predict:
+          type: integer
+          description: Number of tokens to predict
+        n_keep:
+          type: integer
+          description: Number of keep tokens
+        stop:
+          type: array
+          items:
+            type: string
+          description: Stop tokens
+        tfs_z:
+          type: number
+          description: TF-Sampling parameter
+        typical_p:
+          type: number
+          description: Typical-P sampling parameter
+        repeat_penalty:
+          type: number
+          description: Repeat penalty parameter
+        repeat_last_n:
+          type: integer
+          description: Repeat last n tokens parameter
+        penalize_nl:
+          type: boolean
+          description: Penalize newline flag
+        presence_penalty:
+          type: number
+          description: Presence penalty parameter
+        frequency_penalty:
+          type: number
+          description: Frequency penalty parameter
+        penalty_prompt:
+          type: string
+          description: The penalty prompt
+        mirostat:
+          type: integer
+          description: Mirostat parameter
+        mirostat_tau:
+          type: number
+          description: Mirostat tau parameter
+        mirostat_eta:
+          type: number
+          description: Mirostat eta parameter
+        grammar:
+          type: string
+          description: Grammar parameter
+        json_schema:
+          description: Grammar parameter
+        seed:
+          type: integer
+          description: Random seed
+        ignore_eos:
+          type: boolean
+          description: Ignore EOS flag
+        logit_bias:
+          type: array
+          items:
+            type: number
+          description: Logit bias values
+        n_probs:
+          type: integer
+          description: Number of probabilities to return
+        min_keep:
+          type: integer
+          description: Minimum keep tokens parameter
+        image_data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+          description: Images to reference
+        id_slot:
+          type: integer
+          description: Slot identifier
+        cache_prompt:
+          type: boolean
+          description: To cache or not to cache prompt
+        system_prompt:
+          type: string
+          description: System prompt
+        samplers:
+          type: array
+          items:
+            type: string
+          description: Samplers list
+    PostEmbeddingRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Set the text to process.
+        image_data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+    PostEmbeddingResponse:
+      type: object
+      properties:
+        embedding:
+          type: array
+          items:
+            type: number
