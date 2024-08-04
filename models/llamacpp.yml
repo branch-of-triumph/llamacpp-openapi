@@ -109,6 +109,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetPropsResponse'
+  /metrics:
+    get:
+      operationId: getMetrics
+      summary: Get the metrics of the server
+      responses:
+        '200':
+          description: The metrics are fetched
+          content:
+            text/plain:
+              schema:
+                type: string
   /slots:
     get:
       operationId: getSlots
