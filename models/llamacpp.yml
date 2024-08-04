@@ -80,26 +80,62 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostTokenizeResponse'
+                  $ref: '#/components/schemas/PostTokenizeResponse'
+  /slots:
+    get:
+      operationId: getSlots
+      summary: Returns the current slots processing state.
+      responses:
+        '200':
+          description: Returns slot data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSlotsResponse'
+        '501':
+          description: Slots API disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /slots/{id_slot}:
+    post:
+      operationId: postSlots
+      summary: Save, restore, or erase the prompt cache of the specified slot to a file.
+      parameters:
+        - name: id_slot
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: action
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [save, restore, erase]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostSlotsRequest'
+      responses:
+        '200':
+          description: Tokenize text successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostSlotsResponse'
+        '501':
+          description: Slots API disabled.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
-    GetHealthResponse:
-      type: object
-      properties:
-        status:
-          type: string
-        slots_idle:
-          type: integer
-          description: Number of idle slots
-        slots_processing:
-          type: integer
-          description: Number of processing slots
-        slots:
-          type: array
-          items:
-            $ref: '#/components/schemas/Slot'
-      required:
-        - status
     Slot:
       type: object
       properties:
@@ -188,6 +224,35 @@ components:
           $ref: '#/components/schemas/NextToken'
       required:
         - n_ctx
+    SlotsTimings:
+      type: object
+      properties:
+        save_ms:
+          type: number
+          description: Time taken to save in milliseconds
+        restore_ms:
+          type: number
+          description: Time taken to restore in milliseconds
+    CompletionTimings:
+      type: object
+      properties:
+        prompt_n:
+          type: integer
+          description: Prompt Length
+        prompt_ms:
+          type: number
+        prompt_per_token_ms:
+          type: number
+        prompt_per_second:
+          type: number
+        predicted_n:
+          type: integer
+        predicted_ms:
+          type: number
+        predicted_per_token_ms:
+          type: number
+        predicted_per_second:
+          type: number
     NextToken:
       type: object
       properties:
@@ -287,56 +352,50 @@ components:
           type: string
         id:
           type: integer
-    PostCompletionResponse:
+    Error:
       type: object
       properties:
-        content:
+        code:
           type: string
-        id_slot:
-          type: integer
-        stop:
-          type: boolean
-        model:
+          nullable: true
+        message:
           type: string
-        tokens_predicted:
-          type: integer
-        tokens_evaluated:
-          type: integer
-        generation_settings:
-          $ref: '#/components/schemas/GenerationSettings'
-        prompt:
+          nullable: false
+        param:
           type: string
-        truncated:
-          type: boolean
-        stopped_eos:
-          type: boolean
-        stopped_word:
-          type: boolean
-        stopped_limit:
-          type: boolean
-        stopping_word:
+          nullable: true
+        type:
           type: string
-        tokens_cached:
+          nullable: false
+      required:
+        - type
+        - message
+        - param
+        - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+      required:
+        - error
+    GetHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        slots_idle:
           type: integer
-        timings:
-          type: object
-          properties:
-            prompt_n:
-              type: integer
-            prompt_ms:
-              type: number
-            prompt_per_token_ms:
-              type: number
-            prompt_per_second:
-              type: number
-            predicted_n:
-              type: integer
-            predicted_ms:
-              type: number
-            predicted_per_token_ms:
-              type: number
-            predicted_per_second:
-              type: number
+          description: Number of idle slots
+        slots_processing:
+          type: integer
+          description: Number of processing slots
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+      required:
+        - status
     PostCompletionRequest:
       type: object
       properties:
@@ -449,6 +508,39 @@ components:
           items:
             type: string
           description: Samplers list
+    PostCompletionResponse:
+      type: object
+      properties:
+        content:
+          type: string
+        id_slot:
+          type: integer
+        stop:
+          type: boolean
+        model:
+          type: string
+        tokens_predicted:
+          type: integer
+        tokens_evaluated:
+          type: integer
+        generation_settings:
+          $ref: '#/components/schemas/GenerationSettings'
+        prompt:
+          type: string
+        truncated:
+          type: boolean
+        stopped_eos:
+          type: boolean
+        stopped_word:
+          type: boolean
+        stopped_limit:
+          type: boolean
+        stopping_word:
+          type: string
+        tokens_cached:
+          type: integer
+        timings:
+          $ref: '#/components/schemas/CompletionTimings'
     PostTokenizeRequest:
       type: object
       properties:
@@ -466,3 +558,39 @@ components:
           items:
             type: integer
           description: Tokens generated from given text
+    GetSlotsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Slot'
+    PostSlotsRequest:
+      type: object
+      properties:
+        filename:
+          type: string
+          description: Name of the file to to save/restore the slot's prompt cache to/from. The file should be located in the directory specified by the `--slot-save-path` server parameter.
+    PostSlotsResponse:
+      type: object
+      properties:
+        id_slot:
+          type: integer
+          description: Slot ID
+        filename:
+          type: string
+          description: Filename of the saved slot file
+        n_saved:
+          type: integer
+          description: Number of saved items
+        n_written:
+          type: integer
+          description: Number of written items
+        n_restored:
+          type: integer
+          description: Number of restored items
+        n_read:
+          type: integer
+          description: Number of bytes read
+        n_erased:
+          type: integer
+          description: Number of erased items
+        timings:
+          $ref: '#/components/schemas/SlotsTimings'
