@@ -81,6 +81,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostTokenizeResponse'
+  /detokenize:
+    post:
+      operationId: postDetokenize
+      summary: Detokenize given tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDetokenizeRequest'
+      responses:
+        '200':
+          description: Detokenize successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDetokenizeResponse'
+  /props:
+    get:
+      operationId: getProps
+      summary: Get the current settings of the server
+      responses:
+        '200':
+          description: The settings are fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPropsResponse'
   /slots:
     get:
       operationId: getSlots
@@ -764,3 +792,30 @@ components:
           type: array
           items:
             type: number
+    PostDetokenizeRequest:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            type: integer
+    PostDetokenizeResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Text generated from tokens
+    GetPropsResponse:
+      type: object
+      properties:
+        system_prompt:
+          $ref: "#/components/schemas/SystemPrompt"
+        default_generation_settings:
+          $ref: '#/components/schemas/GenerationSettings'
+        total_slots:
+          type: integer
+          description: Total number of slots
+        chat_template:
+          type: string
+          description: The model's prompt template
+        
