@@ -120,6 +120,12 @@ paths:
             text/plain:
               schema:
                 type: string
+        '501':
+          description: Metrics are not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /slots:
     get:
       operationId: getSlots
