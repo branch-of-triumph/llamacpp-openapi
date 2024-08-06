@@ -9,4 +9,4 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Validate llamacpp.yml
-        run: openapi-generator-cli validate -i $GITHUB_WORKSPACE/llamacpp.yml
+        run: openapi-generator-cli validate -i $GITHUB_WORKSPACE/models/llamacpp.yml
