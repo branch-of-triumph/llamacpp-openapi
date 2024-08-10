@@ -6,12 +6,16 @@ info:
 servers:
   - url: http://localhost:8080
 tags:
+  - name: llamaCpp
+    description: llamacpp native API
   - name: openai
     description: openai compatible
 
 paths:
   /health:
     get:
+      tags:
+        - llamaCpp
       summary: Get the health status of the server
       operationId: getHealth
       description: Returns the current state of the server
@@ -49,6 +53,8 @@ paths:
                 $ref: '#/components/schemas/GetHealthResponse'
   /completion:
     post:
+      tags:
+        - llamaCpp
       operationId: postCompletion
       summary: Generate a text completion
       requestBody:
@@ -66,6 +72,8 @@ paths:
                 $ref: '#/components/schemas/PostCompletionResponse'
   /tokenize:
     post:
+      tags:
+        - llamaCpp
       operationId: postTokenize
       summary: Tokenize a given text
       requestBody:
@@ -83,6 +91,8 @@ paths:
                 $ref: '#/components/schemas/PostTokenizeResponse'
   /detokenize:
     post:
+      tags:
+        - llamaCpp
       operationId: postDetokenize
       summary: Detokenize given tokens
       requestBody:
@@ -100,6 +110,8 @@ paths:
                 $ref: '#/components/schemas/PostDetokenizeResponse'
   /props:
     get:
+      tags:
+        - llamaCpp
       operationId: getProps
       summary: Get the current settings of the server
       responses:
@@ -111,6 +123,8 @@ paths:
                 $ref: '#/components/schemas/GetPropsResponse'
   /metrics:
     get:
+      tags:
+        - llamaCpp
       operationId: getMetrics
       summary: Get the metrics of the server
       responses:
@@ -128,6 +142,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /slots:
     get:
+      tags:
+        - llamaCpp
       operationId: getSlots
       summary: Returns the current slots processing state.
       responses:
@@ -145,6 +161,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /slots/{id_slot}:
     post:
+      tags:
+        - llamaCpp
       operationId: postSlots
       summary: Save, restore, or erase the prompt cache of the specified slot to a file.
       parameters:
@@ -180,6 +198,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /infill:
     post:
+      tags:
+        - llamaCpp
       operationId: postInfill
       summary: For code infilling. Takes a prefix and a suffix and returns the predicted completion as stream.
       requestBody:
@@ -197,6 +217,8 @@ paths:
                 $ref: '#/components/schemas/PostInfillResponse'
   /embedding:
     post:
+      tags:
+        - llamaCpp
       operationId: postEmbedding
       summary: Generate embedding of a given text.
       requestBody:
