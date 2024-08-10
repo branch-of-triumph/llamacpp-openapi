@@ -1,0 +1,11 @@
+groupId: "com.branchoftriumph"
+invokerPackage: "com.branchoftriumph.llamacpp.openapi"
+modelPackage: "com.branchoftriumph.llamacpp.openapi"
+apiPackage: "com.branchoftriumph.llamacpp.openapi"
+library: okhttp-gson
+errorObjectType: "com.branchoftriumph.llamacpp.openapi.Error"
+annotationLibrary: "swagger2"
+groupId: "com.branchoftriumph"
+generateBuilders: true
+serializableModel: true
+serializationLibrary: "gson"
