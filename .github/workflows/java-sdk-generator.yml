@@ -1,0 +1,17 @@
+name: Generating Java SDK
+on: [pull_request]
+jobs:
+  generate-java-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Generate Client Library w/ the OpenAPITools Generator
+        uses: openapi-generators/openapitools-generator-action@v1.5.0
+        with:
+          generator: java
+          openapi-file: models/llamacpp.yml
+          config-file: java-generator-config.yml
+          command-args: -o llamacpp-openapi-javasdk
+      - name: List out content
+        run: ls -a llamacpp-openapi-javasdk 
