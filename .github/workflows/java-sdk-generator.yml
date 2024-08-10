@@ -12,6 +12,6 @@ jobs:
           generator: java
           openapi-file: models/llamacpp.yml
           config-file: java-generator-config.yml
-          command-args: -o llamacpp-openapi-javasdk --api-name-suffix 'Client'
+          command-args: -o llamacpp-openapi-javasdk
       - name: List out content
         run: ls -a llamacpp-openapi-javasdk 
