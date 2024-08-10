@@ -1,5 +1,5 @@
 name: Generating Java SDK
-on: [pull-request]
+on: [pull_request]
 jobs:
   generate-java-sdk:
     runs-on: ubuntu-latest
