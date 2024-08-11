@@ -28,7 +28,7 @@ jobs:
       - name: Package and run tests of Maven project for Java Client Library
         env:
           LLAMA_CPP_SERVER_HOSTNAME: ${{ secrets.LLAMA_CPP_SERVER_HOSTNAME }}
-          LLAMA_CPP_COMPLETION_SERVER_PORT: ${{ secrets.LLAMA_CPP_SERVER_HOSTNAME }}
+          LLAMA_CPP_COMPLETION_SERVER_PORT: ${{ secrets.LLAMA_CPP_COMPLETION_SERVER_PORT }}
           LLAMA_CPP_EMBEDDING_SERVER_PORT: ${{ secrets.LLAMA_CPP_EMBEDDING_SERVER_PORT }}
         run: |
           cd javasdk
