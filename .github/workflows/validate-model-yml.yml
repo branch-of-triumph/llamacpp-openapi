@@ -3,6 +3,7 @@ on: [pull_request]
 jobs:
   validate-config:
     runs-on: ubuntu-latest
+    steps:
       - name: Install openapi-generator-cli
         run: npm install -g @openapitools/openapi-generator-cli
       - name: Check out repository code
