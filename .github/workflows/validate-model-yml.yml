@@ -1,4 +1,4 @@
-name: Validating YAML file configuration
+name: Validate OpenAPI Model Spec
 on: [pull_request]
 jobs:
   validate-config:
