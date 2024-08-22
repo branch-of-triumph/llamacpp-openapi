@@ -9,3 +9,4 @@ annotationLibrary: "swagger2"
 generateBuilders: true
 serializableModel: true
 serializationLibrary: "gson"
+supportStreaming: true

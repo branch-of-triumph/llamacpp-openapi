@@ -3,8 +3,11 @@ package com.branchoftriumph.llamacpp.openapi;
 import com.branchoftriumph.llamacpp.openapi.utils.ResponseValidators;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.log4j.Log4j2;
+import okhttp3.Call;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +33,37 @@ public class InferenceAPIsTest extends TestBase {
         final PostCompletionResponse response = llamaChatClient.postCompletion(postCompletionRequest);
         log.info("Generated the next {} tokens of [{}]: [{}].", numTokens, testPrompt, response.getContent());
         log.debug(response);
+    }
+
+    /**
+     * Generate a streamed text completion
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void postCompletion_providePromptWithStreamEnabled_streamsResponse() throws ApiException, IOException {
+        final String testPrompt = "What is one good pickup line?";
+        final int numTokens = 10;
+        final PostCompletionRequest postCompletionRequest = new PostCompletionRequest()
+                .prompt(testPrompt)
+                .nPredict(numTokens)
+                .stream(true);
+        log.info("Attempting to stream the next {} tokens of [{}]...", numTokens, testPrompt);
+        final Call streamedCall = llamaChatClient.postCompletionCall(postCompletionRequest, null);
+        final InputStream rawStream = llamaChatClient.getApiClient().executeStream(streamedCall, null);
+        final BufferedReader streamReader = new BufferedReader(new InputStreamReader(rawStream, StandardCharsets.UTF_8));
+        final StringBuilder finalResponse = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            if (inputStr.isEmpty()) {
+                continue;
+            }
+            final PostCompletionResponse responseChunk = JSON.deserialize(
+                    inputStr.replace("data: ", ""), PostCompletionResponse.class);
+            finalResponse.append(responseChunk.getContent());
+        }
+        streamReader.close();
+        log.info("Streamed the next {} tokens of [{}]: [{}]", numTokens, testPrompt, finalResponse);
     }
 
     /**
@@ -110,5 +144,39 @@ public class InferenceAPIsTest extends TestBase {
         assertNotNull(response.getContent());
         ResponseValidators.validateGenerationSettings(response.getGenerationSettings());
         log.debug(response);
+    }
+
+    /**
+     * Generate a streamed text completion
+     *
+     * @throws ApiException if the Api call fails
+     */
+    @Test
+    public void postInfill_providePromptWithStreamEnabled_streamsResponse() throws ApiException, IOException {
+        final String testPrefix = "At the beginning";
+        final String testSuffix = "the end.";
+        final int numTokens = 10;
+        PostInfillRequest postInfillRequest = new PostInfillRequest()
+                .inputPrefix(testPrefix)
+                .inputSuffix(testSuffix)
+                .nPredict(10);
+        log.info("Attempting to stream infill of the next {} tokens for prefix [{}] and suffix [{}]...", numTokens,
+                testPrefix, testSuffix);
+        final Call streamedCall = llamaChatClient.postInfillCall(postInfillRequest, null);
+        final InputStream rawStream = llamaChatClient.getApiClient().executeStream(streamedCall, null);
+        final BufferedReader streamReader = new BufferedReader(new InputStreamReader(rawStream, StandardCharsets.UTF_8));
+        final StringBuilder finalResponse = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            if (inputStr.isEmpty()) {
+                continue;
+            }
+            final PostCompletionResponse responseChunk = JSON.deserialize(
+                    inputStr.replace("data: ", ""), PostCompletionResponse.class);
+            finalResponse.append(responseChunk.getContent());
+        }
+        streamReader.close();
+        log.info("Streamed the next {} tokens for prefix [{}] and suffix [{}]: [{}].", numTokens, testPrefix,
+                testSuffix, finalResponse);
     }
 }
