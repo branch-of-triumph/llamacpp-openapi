@@ -628,6 +628,8 @@ components:
           type: boolean
         model:
           type: string
+        multimodal:
+          type: boolean
         tokens_predicted:
           type: integer
         tokens_evaluated:

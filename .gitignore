@@ -23,6 +23,20 @@
 hs_err_pid*
 replay_pid*
 
+# IntelliJ
+/.idea
+
 # Ignore generated Java client files
 /javasdk/src/main
 /javasdk/target
+/javasdk/docs
+/javasdk/.gitignore
+/javasdk/.travis.yml
+/javasdk/build.gradle
+/javasdk/build.sbt
+/javasdk/.openapi-generator
+/javasdk/git_push.sh
+/javasdk/gradle*
+/javasdk/.github
+/javasdk/api
+/javasdk/settings.gradle
