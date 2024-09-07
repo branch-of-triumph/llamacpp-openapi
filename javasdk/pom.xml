@@ -388,4 +388,12 @@
         <lombok.version>1.18.34</lombok.version>
         <guava.version>33.2.1-jre</guava.version>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/branchoftriumph/llamacpp-openapi</url>
+        </repository>
+    </distributionManagement>
 </project>
