@@ -30,6 +30,8 @@ jobs:
           cd javasdk
           mvn -B package --no-transfer-progress --file pom.xml -Dmaven.test.skip
       - name: Publish to GitHub Packages Apache Maven
-        run: mvn deploy
+        run: |
+          cd javasdk
+          mvn -B deploy --no-transfer-progress --file pom.xml 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
