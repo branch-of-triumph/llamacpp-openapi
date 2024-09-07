@@ -1,7 +1,7 @@
 name: Maven Package
 on: 
   pull_request:
-    type: [closed]
+    types: [closed]
 jobs:
   publish-java-sdk:
     runs-on: ubuntu-latest
