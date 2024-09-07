@@ -1,7 +1,7 @@
 name: Maven Package
 on: [pull_request]
 jobs:
-  build:
+  publish-java-sdk:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,17 +21,9 @@ jobs:
           openapi-file: models/llamacpp.yml
           config-file: javasdk/openapi-generators-config.yml
           command-args: -o javasdk --global-property apiTests=false,modelTests=false
-      - name: Package and run tests of Maven project for Java Client Library
-        env:
-          LLAMA_CPP_SERVER_HOSTNAME: ${{ secrets.LLAMA_CPP_SERVER_HOSTNAME }}
-          LLAMA_CPP_COMPLETION_SERVER_PORT: ${{ secrets.LLAMA_CPP_COMPLETION_SERVER_PORT }}
-          LLAMA_CPP_EMBEDDING_SERVER_PORT: ${{ secrets.LLAMA_CPP_EMBEDDING_SERVER_PORT }}
-        run: |
-          cd javasdk
-          mvn -B package --no-transfer-progress --file pom.xml -Dmaven.test.skip
       - name: Publish to GitHub Packages Apache Maven
         run: |
           cd javasdk
-          mvn -B deploy --no-transfer-progress --file pom.xml 
+          mvn -B deploy --no-transfer-progress --file pom.xml -Dmaven.test.skip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
